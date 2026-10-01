@@ -1,0 +1,122 @@
+CyberSec Pro: Enterprise Endpoint Security SuiteVelkommen til CyberSec Pro – en avanceret, Python-baseret suite af værktøjer designet til at udføre dybdegående sikkerhedsrevisioner (audits) og afhjælpningsanalyser (remediation) på Windows-maskiner.
+
+Projektet henvender sig til systemadministratorer og it-sikkerhedsprofessionelle, der ønsker at validere, hærde og dokumentere endpoint-sikkerhed ud fra moderne "Zero Trust"-principper.
+
+📦 Værktøjerne i denne suite
+
+Projektet består af to primære, grafiske applikationer, som arbejder i tandem for at sikre dit system fra start til slut:
+
+1. systemcheck.py (Endpoint Auditor)
+Dette er kernekomponenten, der udfører selve sikkerhedsscanningen af computeren.   
+
+Hvad den gør: Applikationen foretager over 30 dybdegående tjek af systemets tilstand ved at aflæse Windows' registreringsdatabase og afvikle PowerShell-scripts, som dækker hardware, identitet, netværk, Defender, forensics og OS-tjenester.   
+
+Output: Tildeler systemet en samlet sikkerhedsscore (0-100) og lader brugeren eksportere den fulde tilstandsrapport som en struktureret JSON-fil.   
+
+⚠️ Bemærk: Denne proces kræver, at programmet afvikles med administratorrettigheder for at kunne læse WMI (Windows Management Instrumentation) og sikre registreringsnøgler.   
+
+2. report_analyzer.py (Remediation Analyzer)
+Et interaktivt analyseværktøj, der indlæser den genererede JSON-rapport og omsætter de rå data til en konkret handlingsplan.   
+
+Hvad den gør: Filtrerer scanningsdataene, så kun de identificerede sårbarheder og fejl vises i brugerfladen.   
+
+Løsningsforslag: Genererer detaljerede, trin-for-trin-vejledninger baseret på en indbygget database, der forklarer, hvordan hver enkelt specifik fejl konfigureres og afhjælpes administrativt.   Eksport: Giver mulighed for at gemme en prioriteret handlingsplan som en tekstfil (.txt) eller Markdown-fil (.md) til it-afdelingen.   
+
+⚙️ Forberedelse af din Windows PCFor at kunne afvikle programmerne, skal din Windows-computer have Python installeret, og systemet skal sættes korrekt op, så det kan finde Python og dets biblioteker uanset hvor du befinder dig i systemet.
+
+Trin 1: Installation af Python og opsætning af PATH
+Hvis du ikke allerede har Python installeret, skal du følge disse trin nøje:Gå til den officielle hjemmeside: python.org/downloads/windows.
+Download den nyeste version af Python (vælg "Windows installer (64-bit)").
+Start den downloadede installationsfil (.exe).
+🛑 MEGET VIGTIGT: På den allerførste skærm i installationsprogrammet skal du sætte flueben i boksen "Add python.exe to PATH" (ofte placeret i bunden af vinduet).
+Hvorfor? Dette trin tilføjer Python til Windows' miljøvariabler (PATH). Det betyder, at kommandoprompten i Windows ved, hvor den skal lede, når du beder den om at køre en Python-kommando eller installere et bibliotek, uanset hvilken mappe du står i.
+Klik derefter på "Install Now" og lad installationen køre færdig.
+Bekræft installationen: Åbn Windows Kommandoprompt (tryk på Windows-tasten, skriv cmd og tryk Enter). 
+Skriv python --version og tryk Enter. Hvis systemet svarer med et versionsnummer (f.eks. Python 3.12.x), er Python og PATH sat korrekt op.
+
+Trin 2: Nødvendige biblioteker og installation
+Programmerne benytter flere indbyggede standardbiblioteker, som automatisk følger med din Python-installation (f.eks. sys, json, datetime, winreg og subprocess). 
+Dem skal du ikke foretage dig noget med.   
+Begge programmer er dog bygget med en grafisk brugergrænseflade, der kræver det eksterne bibliotek PySide6 (Qt for Python). 
+Dette skal hentes og installeres manuelt:   
+Åbn Windows Kommandoprompt (cmd).Skriv følgende kommando og tryk Enter:pip install PySide6
+
+pip (som er Pythons indbyggede pakkehåndteringssystem) vil nu forbinde til internettet, downloade PySide6 og installere det på din pc. 
+Vent til processen melder "Successfully installed".
+
+🚀 Kørsel af programmerne
+Når Python, PATH og PySide6 er på plads, er du klar til at køre suiterne.
+Kørsel af Scanningsværktøjet (Endpoint Auditor):
+Eftersom systemcheck.py undersøger kritiske Windows-komponenter, skal det køres som administrator.   
+Tryk på Windows-tasten, skriv cmd, højreklik på "Kommandoprompt" og vælg "Kør som administrator".
+Brug cd kommandoen til at navigere til den mappe, hvor du har gemt programmet (f.eks. cd C:\Brugere\DitNavn\Downloads).
+Kør programmet med kommandoen: python systemcheck.py
+
+Kørsel af Analyseværktøjet (Remediation Analyzer):
+Dette værktøj læser blot en JSON-fil og kræver derfor ikke administratorrettigheder.   
+Åbn en almindelig Kommandoprompt.Naviger til mappen med scriptet.
+Kør programmet med kommandoen: python report_analyzer_2.py
+
+⚠️ Ansvarsfraskrivelse (Disclaimer)
+Disse programmer interagerer direkte med og rådgiver om ændringer i Windows' kernepolitikker, adgangskontrol (LSA) og registreringsdatabasen. 
+Fejlagtig konfiguration af disse kritiske elementer kan medføre, at systemet bliver ustabilt eller utilgængeligt. 
+Værktøjet og de tilhørende vejledninger stilles til rådighed "som de er", 
+og det anbefales på det kraftigste at gennemteste alle foreslåede ændringer i et lukket testmiljø, før de udrulles i et produktionsmiljø.
+
+Del 1: systemcheck.py
+1. Hvad systemcheck.py laver
+Dette Python-baserede program, systemcheck.py, er en grafisk applikation, der er designet til at udføre en omfattende og dybdegående sikkerhedsrevision ("audit") af en Windows-computer på virksomhedsniveau. systemcheck.py kræver administratorrettigheder for at kunne læse systemets WMI-data (Windows Management Instrumentation) og de beskyttede registreringsdatabasenøgler. Efter endt scanning beregner systemcheck.py en samlet sikkerhedsscore fra 0 til 100 og præsenterer brugeren for en detaljeret rapport over systemets tilstand. Hvis systemcheck.py finder sikkerhedsfejl eller mangler, kan brugeren klikke på et dedikeret link mærket "[LØS FEJL]" i rapporten for at åbne en specifik dialogboks. Denne dialogboks indeholder detaljerede, trin-for-trin-instruktioner til, hvordan det specifikke sikkerhedsproblem kan udbedres. Afslutningsvis tilbyder systemcheck.py en funktion, der gør det muligt at eksportere hele den genererede rapport inklusiv metadata som en struktureret JSON-fil til dokumentationsbrug.
+
+2. Hvad systemcheck.py undersøger
+systemcheck.py analyserer mere end 30 forskellige systempolitikker via registreringsdatabasenøgler og afvikler desuden PowerShell-scripts for at evaluere seks kritiske sikkerhedskategorier:
+
+Hardware og kernesikkerhed: Undersøger, om moderne, hardwarebaseret beskyttelse som TPM 2.0, Secure Boot, BitLocker-drevkryptering og hukommelsesintegritet (HVCI) er aktiveret og korrekt konfigureret på computeren.
+
+Identitet og adgangskontrol: Kontrollerer, at usikre og forældede adgangskodeprotokoller (såsom WDigest og lagring af LM Hash) er deaktiverede, og at indbyggede gæste- og administratorkonti er sikret mod misbrug.
+
+Netværk og protokoller: Analyserer systemets netværkssikkerhed ved at validere, at Windows Firewall-profilerne (Domain, Private, Public) er aktive, at forældede protokoller som SMBv1 er fjernet, og at maskinen ikke har risikable porte åbne.
+
+Defender og trusselsbeskyttelse: Bekræfter, at Windows Defender kører optimalt med realtidsbeskyttelse, cloud-beskyttelse, beskyttelse mod manipulation (Tamper Protection) og beskyttelse af mapper mod ransomware.
+
+PowerShell og forensics: Sikrer, at systemet danner de nødvendige logfiler over systemaktivitet og PowerShell-kommandoer (blandt andet via Script Block Logging og Module Logging), så uautoriserede hændelser kan spores i efterforskningen.
+
+OS-konfiguration og tjenester: Undersøger selve Windows-operativsystemets kernepolitikker, herunder at User Account Control (UAC) er sat korrekt op, at systemets telemetri er begrænset, og at unødvendige tjenester som Xbox-tjenester og Print Spooler er slået fra.
+
+3. Hvad afhjælpning af problemerne betyder for systemets sikkerhed
+Når de identificerede sårbarheder udbedres ved hjælp af anvisningerne i systemcheck.py, hæves systemets modstandsdygtighed betragteligt. En fuld implementering af anbefalingerne fra systemcheck.py betyder følgende for it-sikkerheden:
+
+Forhindring af uautoriseret adgang og spredning (Lateral Movement): Ved at deaktivere usikre netværksprotokoller og beskytte adgangskoder i hukommelsen (eksempelvis via LSA Protection), forhindres it-kriminelle i at udtrække legitimationsoplysninger og sprede sig kompromitterende til andre enheder på virksomhedens netværk.
+
+Modstandsdygtighed over for avanceret malware: Ved at aktivere strenge Defender-politikker og hardwarebaseret kernesikkerhed minimeres risikoen for, at skadelig software og ransomware kan eksekveres, overskrive kritiske systemindstillinger eller kryptere vigtige virksomhedsdata.
+
+Forbedret sporbarhed og hændelseshåndtering: Aktiveringen af fuld logning og transskription af kommandolinje og PowerShell betyder, at it-administratorer har de nødvendige retsmedicinske beviser (forensics) til rådighed, hvilket er altafgørende for at kunne analysere og stoppe et igangværende angreb effektivt.
+
+Minimeret angrebsflade: Ved proaktivt at slukke for overflødige tjenester og lukke usikre porte, fjernes de mest åbenlyse indgangsvinkler for en angriber, hvilket er et afgørende skridt i etableringen af en moderne "Zero Trust"-sikkerhedsarkitektur.
+
+Del 2: report_analyzer.py
+1. Hvad report_analyzer.py laver
+Dette Python-baserede program, report_analyzer.py ("CyberSec Pro - Remediation & Analysis Analyzer"), fungerer som et avanceret, grafisk analyse- og afhjælpningsværktøj for it-sikkerhed. I modsætning til selve scanningsværktøjet indlæser report_analyzer.py en eksisterende, forudgenereret JSON-sikkerhedsrapport og analyserer metadata samt scanningsresultater. report_analyzer.py filtrerer den indlæste data, så det udelukkende præsenterer de systempolitikker og parametre, der dumpede sikkerhedstjekket (dvs. sårbarheder og fejlfunktioner). For hver identificeret fejl genererer report_analyzer.py en detaljeret, trin-for-trin-løsningsvejledning direkte i brugergrænsefladen. Afslutningsvis giver report_analyzer.py brugeren mulighed for at eksportere en komplet og overskuelig handlingsplan som en tekst- eller Markdown-fil, der fremhæver kritiske sårbarheder og instruerer i, hvordan de udbedres administrativt.
+
+2. Hvad report_analyzer.py undersøger
+report_analyzer.py evaluerer de indlæste scanningsdata på tværs af seks overordnede sikkerhedskategorier og belyser specifikt følgende mangler:
+
+Hardware og kernesikkerhed: Analyserer data for manglende hardwarebaseret beskyttelse, herunder inaktivt TPM-modul, deaktiveret Secure Boot, manglende BitLocker-kryptering samt inaktiv hukommelsesintegritet.
+
+Identitet og adgangskontrol: Undersøger indlæste fejl vedrørende kompromitterede adgangskodepolitikker, såsom tilladelse af tomme adgangskoder, aktive indbyggede administrator- og gæstekonti eller manglende implementering af LAPS og LSA-beskyttelse.
+
+Netværk og protokoller: Udtrækker netværksrelaterede sårbarheder fra rapporten, eksempelvis hvis forældede protokoller som SMBv1 er aktive, hvis firewalls (Domæne, Privat, Offentlig) er deaktiverede, eller hvis systemet svarer på usikre porte.
+
+Defender og trusselsbeskyttelse: Fremhæver kritiske mangler i antiviruskonfigurationen, såsom deaktiveret realtidsbeskyttelse, manglende skybaseret beskyttelse (Cloud Protection), inaktiv "Tamper Protection" og manglende mappebeskyttelse mod ransomware.
+
+PowerShell og forensics: Identificerer svagheder i systemets logningsmekanismer ved at påvise manglende logføring af PowerShell-scriptblokke og moduler, samt hvis usikre PowerShell-eksekveringspolitikker eller ældre versioner (PowerShell v2) er tilladt.
+
+OS-konfiguration og tjenester: Belyser usikre operativsystemindstillinger, f.eks. at unødvendige tjenester som Print Spooler eller Xbox-tjenester kører, at automatisk kørsel af USB-enheder (Autorun) er tilladt, eller at UAC (User Account Control) ikke er konfigureret optimalt.
+
+3. Hvad afhjælpning af problemerne betyder for systemets sikkerhed
+Udbedring af de problemer, som report_analyzer.py præsenterer i sin handlingsplan, har afgørende betydning for hærdningen af it-systemet:
+
+Direkte lukning af sårbarheder: Ved at følge de specifikke, trinvise vejledninger fra report_analyzer.py kan administratorer rette de eksakte fejlkonfigurationer, som potentielle angribere ellers ville udnytte til at opnå uautoriseret adgang.
+
+Systematisk risikostyring: Da handlingsplanen i report_analyzer.py eksplicit markerer visse fejl som kritiske sårbarheder ("Høj Prioritet"), sikres det, at it-afdelingen kan prioritere indsatsen og lukke de farligste sikkerhedshuller først.
+
+Minimering af angrebsfladen: Gennem deaktivering af overflødige tjenester, aktivering af strenge adgangskontroller og opdatering af logningspolitikker – som dikteret af vejledningerne i report_analyzer.py – reduceres systemets samlede eksponering markant, hvilket vanskeliggør både infektion og spredning af skadelig software.
