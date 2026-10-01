@@ -1,4 +1,5 @@
-CyberSec Pro: Enterprise Endpoint Security SuiteVelkommen til CyberSec Pro – en avanceret, Python-baseret suite af værktøjer designet til at udføre dybdegående sikkerhedsrevisioner (audits) og afhjælpningsanalyser (remediation) på Windows-maskiner.
+Windows Security Scanner
+Velkommen til CyberSec Pro – en avanceret, Python-baseret suite af værktøjer designet til at udføre dybdegående sikkerhedsrevisioner (audits) og afhjælpningsanalyser (remediation) på Windows-maskiner.
 
 Projektet henvender sig til systemadministratorer og it-sikkerhedsprofessionelle, der ønsker at validere, hærde og dokumentere endpoint-sikkerhed ud fra moderne "Zero Trust"-principper.
 
